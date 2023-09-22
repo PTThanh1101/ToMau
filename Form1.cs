@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace ToMau
@@ -100,14 +101,14 @@ namespace ToMau
             }
 
             List<Color> availableColors = new List<Color>
-    {
-        Color.Red,
-        Color.Green,
-        Color.Blue,
-        Color.Yellow,
-        Color.Orange,
-        Color.Purple
-    };
+            {
+                Color.Red,
+                Color.Green,
+                Color.Blue,
+                Color.Yellow,
+                Color.Orange,
+                Color.Purple
+            };
 
             // Loại bỏ các màu đã được sử dụng bởi các đỉnh kề
             foreach (Color usedColor in neighborColors)
@@ -124,7 +125,6 @@ namespace ToMau
             // Chọn màu trống đầu tiên trong danh sách
             return availableColors[0];
         }
-
 
         private bool AreVerticesConnected(char vertex1, char vertex2)
         {
@@ -169,6 +169,29 @@ namespace ToMau
 
             // Vẽ lại đồ thị sau khi đã tô màu
             this.Invalidate();
+        }
+
+        private IEnumerable<Color> GetColorOrder()
+        {
+            List<Color> colors = new List<Color>
+            {
+                Color.Red,
+                Color.Green,
+                Color.Blue,
+                Color.Yellow,
+                Color.Orange,
+                Color.Purple
+            };
+
+            // Sắp xếp màu theo thứ tự sử dụng ít nhất
+            colors.Sort((color1, color2) => GetColorUsageCount(color1).CompareTo(GetColorUsageCount(color2)));
+
+            return colors;
+        }
+
+        private int GetColorUsageCount(Color color)
+        {
+            return vertexColors.Values.Count(c => c == color);
         }
     }
 }
